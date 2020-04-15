@@ -6,7 +6,7 @@ provider "aws" {
 terraform {
   backend "s3" {
     bucket = "jkrsp-tf-state"
-    key    = "jkrsp.com.tfstate"
+    key    = "websocket-step-functions.tfstate"
     region = "eu-west-2"
   }
 }
