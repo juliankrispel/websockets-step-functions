@@ -29,13 +29,8 @@ resource "aws_sfn_state_machine" "state_machine" {
   name     = "websocket-state-machine"
   role_arn = aws_iam_role.iam_for_sfn.arn
 
-  definition = file("./states.json")
-}
-
-output "lambdas" {
-  value = {
-    for lambda in aws_lambda_function.lambda:
-    lambda.id => lambda.function_name
-  }
-
+  definition = templatefile(
+    "./states.json",
+    { makeTaskArn = aws_lambda_function.lambda["lambdas/make-task.js"].arn }
+  )
 }
