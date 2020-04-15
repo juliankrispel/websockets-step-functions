@@ -24,7 +24,7 @@ data "archive_file" "deployment_package" {
 resource "aws_lambda_function" "lambda" {
   for_each = fileset(path.module, "lambdas/*.js")
 
-  filename      = archive_file.deployment_package[each.value]
+  filename      = data.archive_file.deployment_package[each.value]
   function_name = replace(basename(each.value), ".js", "")
   role          = "${aws_iam_role.iam_for_lambda.arn}"
   handler       = "exports.handler"
