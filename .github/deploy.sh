@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - master
+name: Build Gatsby Site
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+#    - name: Install Dependencies
+#      run: yarn
+#    - name: Build Site
+#      run: yarn build
+    - name: 'Terraform Init'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.13
+        tf_actions_subcommand: 'init'
+    - name: 'Terraform Plan'
+      uses: hashicorp/terraform-github-actions@master
+      with:
+        tf_actions_version: 0.12.13
+        tf_actions_subcommand: 'plan'
+#    - name: 'Terraform Apply'
+#      uses: hashicorp/terraform-github-actions@master
+#      with:
+#        tf_actions_version: 0.12.13
+#        tf_actions_subcommand: 'apply'
+#    - uses: chrislennon/action-aws-cli@v1.1
+#    - name: sync to s3
+#      run: aws s3 sync public s3://jkrsp.com

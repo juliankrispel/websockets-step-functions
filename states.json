@@ -1,0 +1,19 @@
+{
+  "Comment": "A Hello World example of the Amazon States Language using Pass states",
+  "StartAt": "Start",
+  "States": {
+    "Start": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:eu-west-2:492107414874:function:make-task:$LATEST",
+        "Payload": {
+          "Input.$": "$",
+          "ConnectionId.$": "$$.Execution.Name",
+          "TaskToken.$": "$$.Task.Token"
+        }
+      },
+      "End": true
+    }
+  }
+}
