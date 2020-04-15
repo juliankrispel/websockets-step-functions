@@ -13,10 +13,18 @@ resource "aws_iam_role" "iam_for_sfn" {
   assume_role_policy = file("policies/iam_for_sfn.json")
 }
 
+data "archive_file" "deployment_package" {
+  for_each = fileset(path.module, "lambdas/*.js")
+
+  type        = "zip"
+  source_file = each.value
+  output_path = "lambdas/${replace(basename(each.value), ".js", "")}.zip"
+}
+
 resource "aws_lambda_function" "lambda" {
   for_each = fileset(path.module, "lambdas/*.js")
 
-  filename      = each.value
+  filename      = archive_file.deployment_package[each.value]
   function_name = replace(basename(each.value), ".js", "")
   role          = "${aws_iam_role.iam_for_lambda.arn}"
   handler       = "exports.handler"
