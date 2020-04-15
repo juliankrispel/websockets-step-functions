@@ -3,6 +3,13 @@ provider "aws" {
   region  = "eu-west-2"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "jkrsp-tf-state"
+    key    = "jkrsp.com.tfstate"
+  }
+}
+
 resource "aws_iam_role" "iam_for_lambda" {
   name = "sockets_iam_for_lambda"
   assume_role_policy = file("policies/iam_for_lambda.json")
