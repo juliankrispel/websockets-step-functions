@@ -35,7 +35,7 @@ resource "aws_sfn_state_machine" "state_machine" {
 output "lambdas" {
   value = {
     for lambda in aws_lambda_function.lambda:
-    lambda.function_name
+    lambda.id => lambda.function_name
   }
 
 }
