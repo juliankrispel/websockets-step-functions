@@ -4,12 +4,12 @@ provider "aws" {
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
-  name = "iam_for_lambda"
+  name = "sockets_iam_for_lambda"
   assume_role_policy = file("policies/iam_for_lambda.json")
 }
 
 resource "aws_iam_role" "iam_for_sfn" {
-  name = "iam_for_sfn"
+  name = "sockets_iam_for_sfn"
   assume_role_policy = file("policies/iam_for_sfn.json")
 }
 
