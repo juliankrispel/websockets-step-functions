@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - master
-name: Build Gatsby Site
+name: Deploy
 jobs:
   deploy:
     runs-on: ubuntu-latest
