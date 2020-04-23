@@ -5,8 +5,10 @@
           "Sid": "VisualEditor0",
           "Effect": "Allow",
           "Action": [
+              "logs:CreateLogStream",
               "lambda:InvokeFunction",
-              "lambda:InvokeAsync"
+              "lambda:InvokeAsync",
+              "logs:CreateLogGroup"
           ],
           "Resource": "*"
       }

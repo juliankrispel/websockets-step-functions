@@ -13,12 +13,17 @@ terraform {
 
 resource "aws_iam_role" "iam_for_lambda" {
   name = "sockets_iam_for_lambda"
-  assume_role_policy = file("policies/iam_for_lambda.json")
+  assume_role_policy = file("policies/lambda_execution.json")
 }
 
 resource "aws_iam_role" "iam_for_sfn" {
   name = "sockets_iam_for_sfn"
   assume_role_policy = file("policies/iam_for_sfn.json")
+}
+
+resource "aws_iam_role" "iam_for_apig" {
+  name = "sockets_iam_for_sfn"
+  assume_role_policy = file("policies/iam_for_apig.json")
 }
 
 data "archive_file" "deployment_package" {
@@ -57,11 +62,22 @@ resource "aws_apigatewayv2_api" "websocket_api" {
   route_selection_expression = "$request.body.action"
 }
 
+resource "aws_apigatewayv2_deployment" "websocket_api" {
+  api_id      = aws_apigatewayv2_route.websocket_api.api_id
+  description = "Websocket deployment"
+}
+
+resource "aws_apigatewayv2_stage" "v1" {
+  api_id = aws_apigatewayv2_api.websocket_api.id
+  name   = "v1"
+}
+
 resource "aws_apigatewayv2_integration" "start_step_function" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   integration_type = "AWS_PROXY"
   integration_uri = aws_lambda_function.lambda["lambdas/start-step-function.js"].invoke_arn
   integration_method = "POST"
+  credentials_arn = iam_for_apig.arn
 }
 
 resource "aws_apigatewayv2_route" "connect" {
@@ -75,6 +91,7 @@ resource "aws_apigatewayv2_integration" "stop_step_function" {
   integration_type = "AWS_PROXY"
   integration_uri = aws_lambda_function.lambda["lambdas/stop-execution.js"].invoke_arn
   integration_method = "POST"
+  credentials_arn = iam_for_apig.arn
 }
 
 resource "aws_apigatewayv2_route" "disconnect" {
@@ -88,6 +105,7 @@ resource "aws_apigatewayv2_integration" "succeed_task" {
   integration_type = "AWS_PROXY"
   integration_uri = aws_lambda_function.lambda["lambdas/succeed-task.js"].invoke_arn
   integration_method = "POST"
+  credentials_arn = iam_for_apig.arn
 }
 
 resource "aws_apigatewayv2_route" "default" {
