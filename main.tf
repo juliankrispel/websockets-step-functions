@@ -55,10 +55,6 @@ data "template_file" "api-route" {
   template = file("${path.module}/api-route.tpl")
 }
 
-data "template_file" "api-integration" {
-  template = file("${path.module}/api-integration.tpl")
-}
-
 resource "aws_apigatewayv2_api" "websocket_api" {
   name                       = "state-machine-api"
   protocol_type              = "WEBSOCKET"
