@@ -60,7 +60,7 @@ resource "aws_apigatewayv2_api" "websocket_api" {
 resource "aws_apigatewayv2_integration" "start_step_function" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   integration_type = "AWS_PROXY"
-  integration_uri = aws_lambda_function.lambda["lambdas/start-step-functions.js"]
+  integration_uri = aws_lambda_function.lambda["lambdas/start-step-functions.js"].invoke_arn
 }
 
 resource "aws_apigatewayv2_route" "connect" {
@@ -72,7 +72,7 @@ resource "aws_apigatewayv2_route" "connect" {
 resource "aws_apigatewayv2_integration" "stop_step_function" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   integration_type = "AWS_PROXY"
-  integration_uri = aws_lambda_function.lambda["lambdas/stop-execution.js"]
+  integration_uri = aws_lambda_function.lambda["lambdas/stop-execution.js"].invoke_arn
 }
 
 resource "aws_apigatewayv2_route" "disconnect" {
@@ -84,7 +84,7 @@ resource "aws_apigatewayv2_route" "disconnect" {
 resource "aws_apigatewayv2_integration" "succeed_task" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   integration_type = "AWS_PROXY"
-  integration_uri = aws_lambda_function.lambda["lambdas/succeed-task.js"]
+  integration_uri = aws_lambda_function.lambda["lambdas/succeed-task.js"].invoke_arn
 }
 
 resource "aws_apigatewayv2_route" "default" {
