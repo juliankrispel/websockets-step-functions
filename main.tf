@@ -66,7 +66,7 @@ resource "aws_apigatewayv2_integration" "start_step_function" {
 resource "aws_apigatewayv2_route" "connect" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   route_key = "$connect"
-  target = aws_apigatewayv2_integration.start_step_function.id
+  target = "integrations/${aws_apigatewayv2_integration.start_step_function.id}"
 }
 
 resource "aws_apigatewayv2_integration" "stop_step_function" {
@@ -78,7 +78,7 @@ resource "aws_apigatewayv2_integration" "stop_step_function" {
 resource "aws_apigatewayv2_route" "disconnect" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   route_key = "$disconnect"
-  target = aws_apigatewayv2_integration.stop_step_function.id
+  target = "integrations/${aws_apigatewayv2_integration.stop_step_function.id}"
 }
 
 resource "aws_apigatewayv2_integration" "succeed_task" {
@@ -90,5 +90,5 @@ resource "aws_apigatewayv2_integration" "succeed_task" {
 resource "aws_apigatewayv2_route" "default" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   route_key = "$default"
-  target = aws_apigatewayv2_integration.succeed_task.id
+  target = "integrations/${aws_apigatewayv2_integration.succeed_task.id}"
 }
