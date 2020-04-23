@@ -11,19 +11,19 @@ terraform {
   }
 }
 
-resource "aws_iam_role" "iam_for_lambda" {
+resource "aws_iam_role_policy" "iam_for_lambda" {
   name = "sockets_iam_for_lambda"
-  assume_role_policy = file("policies/lambda_execution.json")
+  policy = file("policies/lambda_execution.json")
 }
 
-resource "aws_iam_role" "iam_for_sfn" {
+resource "aws_iam_role_policy" "iam_for_sfn" {
   name = "sockets_iam_for_sfn"
-  assume_role_policy = file("policies/iam_for_sfn.json")
+  policy = file("policies/iam_for_sfn.json")
 }
 
-resource "aws_iam_role" "iam_for_apig" {
+resource "aws_iam_role_policy" "iam_for_apig" {
   name = "sockets_iam_for_sfn"
-  assume_role_policy = file("policies/iam_for_apig.json")
+  policy = file("policies/iam_for_apig.json")
 }
 
 data "archive_file" "deployment_package" {
