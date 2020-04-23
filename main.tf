@@ -50,3 +50,53 @@ resource "aws_sfn_state_machine" "state_machine" {
     { makeTaskArn = aws_lambda_function.lambda["lambdas/make-task.js"].arn }
   )
 }
+
+data "template_file" "api-route" {
+  template = file("${path.module}/api-route.tpl")
+}
+
+data "template_file" "api-integration" {
+  template = file("${path.module}/api-integration.tpl")
+}
+
+resource "aws_apigatewayv2_api" "websocket_api" {
+  name                       = "state-machine-api"
+  protocol_type              = "WEBSOCKET"
+  route_selection_expression = "$request.body.action"
+}
+
+resource "aws_apigatewayv2_integration" "start_step_function" {
+  api_id           = aws_apigatewayv2_api.websocket_api.id
+  integration_type = "AWS_PROXY"
+  integration_uri = aws_lambda_function.lambda["lambdas/start-step-functions.js"]
+}
+
+resource "aws_apigatewayv2_route" "connect" {
+  api_id           = aws_apigatewayv2_api.websocket_api.id
+  route_key = "$connect"
+  target = aws_apigatewayv2_integration.start_step_function.id
+}
+
+resource "aws_apigatewayv2_integration" "stop_step_function" {
+  api_id           = aws_apigatewayv2_api.websocket_api.id
+  integration_type = "AWS_PROXY"
+  integration_uri = aws_lambda_function.lambda["lambdas/stop-execution.js"]
+}
+
+resource "aws_apigatewayv2_route" "disconnect" {
+  api_id           = aws_apigatewayv2_api.websocket_api.id
+  route_key = "$disconnect"
+  target = aws_apigatewayv2_integration.stop_step_function.id
+}
+
+resource "aws_apigatewayv2_integration" "succeed_task" {
+  api_id           = aws_apigatewayv2_api.websocket_api.id
+  integration_type = "AWS_PROXY"
+  integration_uri = aws_lambda_function.lambda["lambdas/succeed-task.js"]
+}
+
+resource "aws_apigatewayv2_route" "default" {
+  api_id           = aws_apigatewayv2_api.websocket_api.id
+  route_key = "$default"
+  target = aws_apigatewayv2_integration.succeed_task.id
+}
