@@ -3,6 +3,9 @@
   "Statement": [
     {
       "Action": "sts:AssumeRole",
+      "Principal": {
+        "Principal": {"AWS": "*"}
+      },
       "Effect": "Allow",
       "Sid": ""
     }
