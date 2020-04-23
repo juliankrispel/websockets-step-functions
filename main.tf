@@ -60,7 +60,7 @@ resource "aws_apigatewayv2_api" "websocket_api" {
 resource "aws_apigatewayv2_integration" "start_step_function" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   integration_type = "AWS_PROXY"
-  integration_uri = aws_lambda_function.lambda["lambdas/start-step-functions.js"].invoke_arn
+  integration_uri = aws_lambda_function.lambda["lambdas/start-step-function.js"].invoke_arn
 }
 
 resource "aws_apigatewayv2_route" "connect" {
