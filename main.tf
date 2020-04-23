@@ -63,7 +63,7 @@ resource "aws_apigatewayv2_api" "websocket_api" {
 }
 
 resource "aws_apigatewayv2_deployment" "websocket_api" {
-  api_id      = aws_apigatewayv2_route.websocket_api.api_id
+  api_id      = aws_apigatewayv2_api.websocket_api.api_id
   description = "Websocket deployment"
 }
 
