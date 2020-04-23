@@ -27,7 +27,7 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
 }
 
 resource "aws_iam_role" "iam_for_sfn" {
-  name = "sockets_iam_for_lambda"
+  name = "sockets_iam_for_sfn"
   assume_role_policy = file("policies/assume_role.json")
 }
 
@@ -42,7 +42,7 @@ resource "aws_iam_role_policy_attachment" "sfn_policy_attachment" {
 }
 
 resource "aws_iam_role" "iam_for_apig" {
-  name = "sockets_iam_for_lambda"
+  name = "sockets_iam_for_apig"
   assume_role_policy = file("policies/assume_role.json")
 }
 
