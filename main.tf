@@ -51,10 +51,6 @@ resource "aws_sfn_state_machine" "state_machine" {
   )
 }
 
-data "template_file" "api-route" {
-  template = file("${path.module}/api-route.tpl")
-}
-
 resource "aws_apigatewayv2_api" "websocket_api" {
   name                       = "state-machine-api"
   protocol_type              = "WEBSOCKET"
