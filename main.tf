@@ -39,7 +39,7 @@ resource "aws_lambda_function" "lambda" {
 
   filename      = data.archive_file.deployment_package[each.value].output_path
   function_name = replace(basename(each.value), ".js", "")
-  role          = "${aws_iam_role.iam_for_lambda.arn}"
+  role          = aws_iam_role.iam_for_lambda.arn
   handler       = "exports.handler"
 
   source_code_hash = filebase64(each.value)
@@ -77,7 +77,7 @@ resource "aws_apigatewayv2_integration" "start_step_function" {
   integration_type = "AWS_PROXY"
   integration_uri = aws_lambda_function.lambda["lambdas/start-step-function.js"].invoke_arn
   integration_method = "POST"
-  credentials_arn = iam_for_apig.arn
+  credentials_arn = aws_iam_role.iam_for_apig.arn
 }
 
 resource "aws_apigatewayv2_route" "connect" {
@@ -91,7 +91,7 @@ resource "aws_apigatewayv2_integration" "stop_step_function" {
   integration_type = "AWS_PROXY"
   integration_uri = aws_lambda_function.lambda["lambdas/stop-execution.js"].invoke_arn
   integration_method = "POST"
-  credentials_arn = iam_for_apig.arn
+  credentials_arn = aws_iam_role.iam_for_apig.arn
 }
 
 resource "aws_apigatewayv2_route" "disconnect" {
@@ -105,7 +105,7 @@ resource "aws_apigatewayv2_integration" "succeed_task" {
   integration_type = "AWS_PROXY"
   integration_uri = aws_lambda_function.lambda["lambdas/succeed-task.js"].invoke_arn
   integration_method = "POST"
-  credentials_arn = iam_for_apig.arn
+  credentials_arn = aws_iam_role.iam_for_apig.arn
 }
 
 resource "aws_apigatewayv2_route" "default" {
