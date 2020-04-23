@@ -11,19 +11,49 @@ terraform {
   }
 }
 
-resource "aws_iam_role_policy" "iam_for_lambda" {
+resource "aws_iam_role" "iam_for_lambda" {
   name = "sockets_iam_for_lambda"
-  policy = file("policies/lambda_execution.json")
+  assume_role_policy = file("policies/assume_role.json")
 }
 
-resource "aws_iam_role_policy" "iam_for_sfn" {
-  name = "sockets_iam_for_sfn"
+resource "aws_iam_policy" "lambda_policy" {
+  name        = "lambda-policy"
+  policy = file("policies/iam_for_lambda.json")
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = aws_iam_policy.lambda_policy.arn
+}
+
+resource "aws_iam_role" "iam_for_sfn" {
+  name = "sockets_iam_for_lambda"
+  assume_role_policy = file("policies/assume_role.json")
+}
+
+resource "aws_iam_policy" "sfn_policy" {
+  name        = "sfn-policy"
   policy = file("policies/iam_for_sfn.json")
 }
 
-resource "aws_iam_role_policy" "iam_for_apig" {
-  name = "sockets_iam_for_sfn"
+resource "aws_iam_role_policy_attachment" "sfn_policy_attachment" {
+  role       = aws_iam_role.iam_for_sfn.name
+  policy_arn = aws_iam_policy.sfn_policy.arn
+}
+
+resource "aws_iam_role" "iam_for_apig" {
+  name = "sockets_iam_for_lambda"
+  assume_role_policy = file("policies/assume_role.json")
+}
+
+resource "aws_iam_policy" "apig_policy" {
+  name        = "apig-policy"
   policy = file("policies/iam_for_apig.json")
+}
+
+resource "aws_iam_role_policy_attachment" "apig_policy_attachment" {
+  role       = aws_iam_role.iam_for_apig.name
+  policy_arn = aws_iam_policy.apig_policy.arn
 }
 
 data "archive_file" "deployment_package" {
