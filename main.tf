@@ -175,18 +175,10 @@ resource "aws_apigatewayv2_route" "default" {
   target = "integrations/${aws_apigatewayv2_integration.succeed_task.id}"
 }
 
-
-// resource "aws_apigatewayv2_deployment" "websocket_api" {
-//   api_id      = aws_apigatewayv2_api.websocket_api.id
-//   description = "Websocket deployment"
-//   depends_on = ["aws_apigatewayv2_route.default", "aws_apigatewayv2_route.disconnect", "aws_apigatewayv2_route.connect"]
-// }
-
 resource "aws_apigatewayv2_stage" "v1" {
   api_id = aws_apigatewayv2_api.websocket_api.id
   name   = "v1"
   auto_deploy = true
-//  deployment_id = aws_apigatewayv2_deployment.websocket_api.id
 
   default_route_settings {
     logging_level = "INFO"
