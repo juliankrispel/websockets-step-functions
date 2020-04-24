@@ -186,6 +186,7 @@ resource "aws_apigatewayv2_stage" "v1" {
   api_id = aws_apigatewayv2_api.websocket_api.id
   name   = "v1"
   deployment_id = aws_apigatewayv2_deployment.websocket_api.id
+  auto_deploy = true
 
   default_route_settings {
     logging_level = "INFO"
