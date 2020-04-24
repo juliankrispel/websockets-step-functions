@@ -12,13 +12,12 @@ exports.handler = async (event) => {
     endpoint: url
   });
   
-  await api.postToConnection({
+  await api.deleteConnection({
     ConnectionId,
-    Data: JSON.stringify({ taskToken: TaskToken })
   }).promise()
   
   return {
       statusCode: 200,
-      body: JSON.stringify('looking good'),
+      body: JSON.stringify('Disconnected client'),
   }
 };

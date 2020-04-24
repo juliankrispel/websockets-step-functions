@@ -95,6 +95,23 @@ resource "aws_lambda_function" "make_task" {
   }
 }
 
+resource "aws_lambda_function" "make_task" {
+  filename      = data.archive_file.deployment_package["lambdas/disconnect.js"].output_path
+  function_name = "disconnect"
+  role          = aws_iam_role.iam_for_lambda.arn
+  handler       = "disconnect.handler"
+
+  source_code_hash = filebase64("lambdas/disconnect.js")
+  runtime = "nodejs12.x"
+
+  environment {
+    variables = {
+      CONNECTION_URL = "https://${aws_apigatewayv2_api.websocket_api.id}.execute-api.eu-west-2.amazonaws.com/v1"
+    }
+  }
+}
+
+
 resource "aws_lambda_function" "stop_execution" {
   filename      = data.archive_file.deployment_package["lambdas/stop-execution.js"].output_path
   function_name = "stop-execution"
@@ -121,7 +138,10 @@ resource "aws_sfn_state_machine" "state_machine" {
 
   definition = templatefile(
     "./states.json",
-    { makeTaskArn = aws_lambda_function.make_task.arn }
+    {
+      makeTaskArn = aws_lambda_function.make_task.arn
+      disconnectArn = aws_lambda_function.disconnect.arn
+    }
   )
 }
 

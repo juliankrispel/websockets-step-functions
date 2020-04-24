@@ -13,6 +13,17 @@
           "TaskToken.$": "$$.Task.Token"
         }
       },
+      "Next": "Disconnect Socket"
+    },
+    "Disconnect Client": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${disconnectArn}",
+        "Payload": {
+          "ConnectionId.$": "$$.Execution.Name"
+        }
+      },
       "End": true
     }
   }
