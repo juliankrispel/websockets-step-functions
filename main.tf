@@ -2,13 +2,13 @@ provider "aws" {
   region  = "eu-west-2"
 }
 
-// terraform {
-//   backend "s3" {
-//     bucket = "jkrsp-tf-state"
-//     key    = "websocket-step-functions.tfstate"
-//     region = "eu-west-2"
-//   }
-// }
+terraform {
+  backend "s3" {
+    bucket = "jkrsp-tf-state"
+    key    = "websocket-step-functions.tfstate"
+    region = "eu-west-2"
+  }
+}
 
 resource "aws_iam_role" "iam_for_lambda" {
   name = "sockets_iam_for_lambda"
