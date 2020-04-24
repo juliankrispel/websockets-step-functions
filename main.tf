@@ -90,7 +90,7 @@ resource "aws_lambda_function" "make_task" {
 
   environment {
     variables = {
-      CONNECTION_URL = "https://${aws_apigatewayv2_api.websocket_api.id}.execute-api.eu-west-2.amazonaws.com/${aws_apigatewayv2_stage.v1.id}"
+      CONNECTION_URL = "https://${aws_apigatewayv2_api.websocket_api.id}.execute-api.eu-west-2.amazonaws.com/v1"
     }
   }
 }
