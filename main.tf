@@ -64,15 +64,13 @@ data "archive_file" "deployment_package" {
   output_path = "lambdas/${replace(basename(each.value), ".js", "")}.zip"
 }
 
-resource "aws_lambda_function" "lambda" {
-  for_each = fileset(path.module, "lambdas/*.js")
-
-  filename      = data.archive_file.deployment_package[each.value].output_path
-  function_name = replace(basename(each.value), ".js", "")
+resource "aws_lambda_function" "start_step_function" {
+  filename      = data.archive_file.deployment_package["lambdas/start-step-function.js"].output_path
+  function_name = "start-step-function"
   role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "${replace(basename(each.value), ".js", "")}.handler"
+  handler       = "start-step-function.handler"
 
-  source_code_hash = filebase64(each.value)
+  source_code_hash = filebase64("lambdas/start-step-function.js")
   runtime = "nodejs12.x"
 
   environment {
@@ -80,6 +78,36 @@ resource "aws_lambda_function" "lambda" {
       STATE_MACHINE_ARN = aws_sfn_state_machine.state_machine.id
     }
   }
+}
+
+resource "aws_lambda_function" "make_task" {
+  filename      = data.archive_file.deployment_package["lambdas/make-task.js"].output_path
+  function_name = "make-task"
+  role          = aws_iam_role.iam_for_lambda.arn
+  handler       = "make-task.handler"
+
+  source_code_hash = filebase64("lambdas/make-task.js")
+  runtime = "nodejs12.x"
+}
+
+resource "aws_lambda_function" "stop_execution" {
+  filename      = data.archive_file.deployment_package["lambdas/stop-execution.js"].output_path
+  function_name = "stop-execution"
+  role          = aws_iam_role.iam_for_lambda.arn
+  handler       = "stop-execution.handler"
+
+  source_code_hash = filebase64("lambdas/stop-execution.js")
+  runtime = "nodejs12.x"
+}
+
+resource "aws_lambda_function" "succeed_task" {
+  filename      = data.archive_file.deployment_package["lambdas/succeed-task.js"].output_path
+  function_name = "succeed-task"
+  role          = aws_iam_role.iam_for_lambda.arn
+  handler       = "succeed-task.handler"
+
+  source_code_hash = filebase64("lambdas/succeed-task.js")
+  runtime = "nodejs12.x"
 }
 
 resource "aws_sfn_state_machine" "state_machine" {
@@ -117,7 +145,7 @@ resource "aws_apigatewayv2_stage" "v1" {
 resource "aws_apigatewayv2_integration" "start_step_function" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   integration_type = "AWS_PROXY"
-  integration_uri = aws_lambda_function.lambda["lambdas/start-step-function.js"].invoke_arn
+  integration_uri = aws_lambda_function.start_step_function.invoke_arn
   integration_method = "POST"
   credentials_arn = aws_iam_role.iam_for_apig.arn
 
@@ -132,7 +160,7 @@ resource "aws_apigatewayv2_route" "connect" {
 resource "aws_apigatewayv2_integration" "stop_step_function" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   integration_type = "AWS_PROXY"
-  integration_uri = aws_lambda_function.lambda["lambdas/stop-execution.js"].invoke_arn
+  integration_uri = aws_lambda_function.stop_execution.invoke_arn
   integration_method = "POST"
   credentials_arn = aws_iam_role.iam_for_apig.arn
 }
@@ -146,7 +174,7 @@ resource "aws_apigatewayv2_route" "disconnect" {
 resource "aws_apigatewayv2_integration" "succeed_task" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   integration_type = "AWS_PROXY"
-  integration_uri = aws_lambda_function.lambda["lambdas/succeed-task.js"].invoke_arn
+  integration_uri = aws_lambda_function.succeed_task.invoke_arn
   integration_method = "POST"
   credentials_arn = aws_iam_role.iam_for_apig.arn
 }
