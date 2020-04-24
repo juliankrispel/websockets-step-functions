@@ -15,7 +15,7 @@
       },
       "Next": "Disconnect Socket"
     },
-    "Disconnect Client": {
+    "Disconnect Socket": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "Parameters": {
