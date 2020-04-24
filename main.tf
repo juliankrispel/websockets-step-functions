@@ -74,6 +74,12 @@ resource "aws_lambda_function" "lambda" {
 
   source_code_hash = filebase64(each.value)
   runtime = "nodejs12.x"
+
+  environment {
+    variables = {
+      STATE_MACHINE_ARN = aws_sfn_state_machine.state_machine.id
+    }
+  }
 }
 
 resource "aws_sfn_state_machine" "state_machine" {
@@ -115,11 +121,6 @@ resource "aws_apigatewayv2_integration" "start_step_function" {
   integration_method = "POST"
   credentials_arn = aws_iam_role.iam_for_apig.arn
 
-  environment {
-    variables = {
-      STATE_MACHINE_ARN = aws_sfn_state_machine.state_machine.id
-    }
-  }
 }
 
 resource "aws_apigatewayv2_route" "connect" {
