@@ -8,12 +8,7 @@
               "logs:CreateLogStream",
               "lambda:InvokeFunction",
               "lambda:InvokeAsync",
-              "logs:CreateLogGroup",
-              "states:SendTaskFailure",
-              "states:StartExecution",
-              "states:StopExecution",
-              "states:SendTaskHeartbeat",
-              "states:GetActivityTask"
+              "logs:CreateLogGroup"
           ],
           "Resource": "*"
       }

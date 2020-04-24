@@ -87,6 +87,12 @@ resource "aws_lambda_function" "make_task" {
 
   source_code_hash = filebase64("lambdas/make-task.js")
   runtime = "nodejs12.x"
+
+  environment {
+    variables = {
+      CONNECTION_URL = "https://${aws_apigatewayv2_api.websocket_api.id}.execute-api.eu-west-2.amazonaws.com/${aws_apigatewayv2_stage.v1.id}"
+    }
+  }
 }
 
 resource "aws_lambda_function" "stop_execution" {

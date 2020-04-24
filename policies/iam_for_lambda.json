@@ -11,6 +11,8 @@
               "states:StartExecution",
               "states:StopExecution",
               "logs:CreateLogGroup",
+              "execute-api:ManageConnections",
+              "logs:PutLogEvents",
               "states:SendTaskHeartbeat",
               "states:GetActivityTask"
           ],
