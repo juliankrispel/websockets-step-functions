@@ -2,13 +2,13 @@ provider "aws" {
   region  = "eu-west-2"
 }
 
-terraform {
-  backend "s3" {
-    bucket = "jkrsp-tf-state"
-    key    = "websocket-step-functions.tfstate"
-    region = "eu-west-2"
-  }
-}
+// terraform {
+//   backend "s3" {
+//     bucket = "jkrsp-tf-state"
+//     key    = "websocket-step-functions.tfstate"
+//     region = "eu-west-2"
+//   }
+// }
 
 resource "aws_iam_role" "iam_for_lambda" {
   name = "sockets_iam_for_lambda"
@@ -95,7 +95,7 @@ resource "aws_lambda_function" "make_task" {
   }
 }
 
-resource "aws_lambda_function" "make_task" {
+resource "aws_lambda_function" "disconnect" {
   filename      = data.archive_file.deployment_package["lambdas/disconnect.js"].output_path
   function_name = "disconnect"
   role          = aws_iam_role.iam_for_lambda.arn
