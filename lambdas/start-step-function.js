@@ -7,7 +7,7 @@ exports.handler = async (event) => {
         const { connectionId } = event.requestContext
         console.log({ connectionId })
         const execution = await sfn.startExecution({
-            stateMachineArn: 'arn:aws:states:eu-west-2:492107414874:stateMachine:MyStateMachine',
+            stateMachineArn: process.env.STATE_MACHINE_ARN,
             name: connectionId
         }).promise()
         console.log({ execution })

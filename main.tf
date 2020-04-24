@@ -100,6 +100,12 @@ resource "aws_apigatewayv2_deployment" "websocket_api" {
 resource "aws_apigatewayv2_stage" "v1" {
   api_id = aws_apigatewayv2_api.websocket_api.id
   name   = "v1"
+  deployment_id = aws_apigatewayv2_deployment.websocket_api.id
+
+  default_route_settings {
+    logging_level = "INFO"
+    detailed_metrics_enabled = true
+  }
 }
 
 resource "aws_apigatewayv2_integration" "start_step_function" {
@@ -108,6 +114,12 @@ resource "aws_apigatewayv2_integration" "start_step_function" {
   integration_uri = aws_lambda_function.lambda["lambdas/start-step-function.js"].invoke_arn
   integration_method = "POST"
   credentials_arn = aws_iam_role.iam_for_apig.arn
+
+  environment {
+    variables = {
+      STATE_MACHINE_ARN = aws_sfn_state_machine.state_machine.id
+    }
+  }
 }
 
 resource "aws_apigatewayv2_route" "connect" {
