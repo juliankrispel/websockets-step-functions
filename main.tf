@@ -1,5 +1,4 @@
 provider "aws" {
-  profile = "reactrocket"
   region  = "eu-west-2"
 }
 
@@ -116,7 +115,7 @@ resource "aws_sfn_state_machine" "state_machine" {
 
   definition = templatefile(
     "./states.json",
-    { makeTaskArn = aws_lambda_function.lambda["lambdas/make-task.js"].arn }
+    { makeTaskArn = aws_lambda_function.make_task.arn }
   )
 }
 
