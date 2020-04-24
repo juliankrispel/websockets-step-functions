@@ -145,7 +145,7 @@ resource "aws_apigatewayv2_integration" "start_step_function" {
   api_id           = aws_apigatewayv2_api.websocket_api.id
   integration_type = "AWS_PROXY"
   integration_uri = aws_lambda_function.start_step_function.invoke_arn
-  integration_method = "GET"
+  integration_method = "POST"
   credentials_arn = aws_iam_role.iam_for_apig.arn
 
 }
